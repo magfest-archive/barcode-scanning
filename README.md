@@ -1,6 +1,7 @@
-# barcode-scanning-test
-proof of concept code for barcode scanning
+Barcode Scanning Detection
 
-uses https://github.com/kabachello/jQuery-Scanner-Detection, see that for more docs and how to tweak
+A simple utility plugin meant to enable barcode scanning. Calls an empty function called `barcodeScanned(barcode) {}` -- override this in your plugins.
 
-read dis: http://a.kabachnik.info/jquery-scannerdetection-tutorial.html for tutorial
+Uses https://github.com/kabachello/jQuery-Scanner-Detection, see that for more docs and how to tweak.
+
+Based on http://a.kabachnik.info/jquery-scannerdetection-tutorial.html
