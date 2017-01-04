@@ -1,0 +1,23 @@
+<script type="text/javascript" src="../static/jQuery-Scanner-Detection/jquery.scannerdetection.js"></script>
+<script type="text/javascript">
+    if (typeof window.barcodeScanned === 'undefined') {
+        function barcodeScanned(barcode) {
+            // This is meant to be defined in other plugins but having it here prevents errors
+        }
+    }
+    $(document).ready(function() {
+        $(document).scannerDetection({
+            onReceive: function(event){console.log(event.which); return false;}, // debugging only
+            timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+            startChar: [2], // Prefix character for Dom's scanner (^B which is STX)
+            endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+            avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+            // stopPropagation: true,
+            // preventDefault: true,
+            // ignoreIfFocusOn: 'input',
+            onComplete: function (barcode, qty) {
+                barcodeScanned(barcode);
+            }
+        });
+    });
+</script>
