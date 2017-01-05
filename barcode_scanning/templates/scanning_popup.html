@@ -1,0 +1,72 @@
+    <script type="text/javascript">
+    if(window.location.hash!=""){
+        localStorage["barcode"] = window.location.hash.substr(1);
+        self.close();
+        window.location.assign("about:blank");// In case dom.allow_scripts_to_close_windows is not set
+    }else{
+        window.addEventListener("storage", function(e){
+            localStorage["barcode"]="";
+            if(e.url.split("\#")[0]==window.location.href){
+                window.focus();
+                barcodeScanned(e.newValue);
+            }
+        }, false);
+        window.addEventListener("hashchange", function(e){
+            var hash = window.location.hash.substr(1);
+            if (hash != "") {
+                window.location.hash = "";
+                barcodeScanned(unescape(hash));
+            }
+        }, false);
+    }
+    function getScan(){
+        var href = window.location.href.split("\#")[0];
+        window.open("zxing://scan/?ret=" + escape( href + "#{CODE}"),'_self');
+    }
+
+    $(function() {
+        $("#barcode_scan").click(function () {
+            getScan();
+        });
+    });
+
+    $(function () {
+        if ($('#main-menu')) {
+            ($('#main-menu')).append(
+                        $('<li></li>').append(
+                            $('<a id="scanning_popup" href="#">Scan QR Code</a>')));
+        }
+
+         $("#scanning_popup").click(function() {
+             bootbox.confirm({
+                 title: 'Scan a QR Code',
+                 message: '<strong>Scan a barcode with your phone (Android only)</strong>'+
+                     '<br/>Step 1: Install the "Barcode Scanner" app on your phone. It must be this specific one:'+
+                     '<br/><a href="https://play.google.com/store/apps/details?id=com.google.zxing.client.android" target="_blank"><img src="http://www.android.com/images/brand/android_app_on_play_logo_small.png" alt="Install the ZXing Barcode Scanner app" /></a>'+
+                     '<br/><br/>Step 2: Open the app and ensure that the correct barcode format is enabled. Currently, for check-in barcodes, we use Aztec -- this is disabled by default, so you need to enable it.'+
+                     '<br/><br/>Step 3: Click the button!'+
+                     '<br/><button class="btn btn-success" id="barcode_scan">Scan!</button>'+
+                     '<br/><br/><br/><strong>Scan a barcode with a barcode scanner</strong>'+
+                     '<br/>If you scan a barcode on any admin page, it should be automatically detected. If not, scan it into the prompt below:'+
+                 '<br/><input type="text" name="barcode" id="barcode" />',
+                 buttons: {
+                    confirm: {
+                        label: 'Scan',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Cancel'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        var barcode = $("#barcode").val();
+                        if (barcode) { barcodeScanned(barcode) }
+                    }
+                }
+
+             });
+         });
+    });
+
+    </script>
